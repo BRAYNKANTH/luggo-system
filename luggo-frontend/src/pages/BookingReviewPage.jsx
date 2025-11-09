@@ -11,23 +11,24 @@ export default function BookingReviewPage() {
   const { state } = useLocation();
   const navigate = useNavigate();
 
-  if (!state || !state.cart?.length) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-gray-500">
-        No booking found. Go back and choose lockers.
-      </div>
-    );
-  }
+  // Extract safely
+  const hub_id = state?.hub_id;
+  const date = state?.date;
+  const mode = state?.mode;
 
-  const { hub_id, date, mode, cart } = state;
+  // ✅ Stabilize cart reference to avoid dependency warnings
+  const cart = useMemo(() => state?.cart || [], [state?.cart]);
 
+  // ✅ useMemo depends on stable cart
   const totals = useMemo(() => {
     let total = 0;
     const rows = cart.map((item) => {
       let amount = 0;
 
       if (item.type === "hourly") {
-        amount = Number(item.locker.price_per_hour || 0) * (item.slot_ids?.length || 0);
+        amount =
+          Number(item.locker.price_per_hour || 0) *
+          (item.slot_ids?.length || 0);
       } else {
         amount = Number(item.locker.day_price || 0);
       }
@@ -39,7 +40,17 @@ export default function BookingReviewPage() {
     return { rows, total };
   }, [cart]);
 
+  // ✅ useState is always called
   const [loading, setLoading] = useState(false);
+
+  // ✅ Return UI after hooks have been called
+  if (!state || cart.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-500">
+        No booking found. Go back and choose lockers.
+      </div>
+    );
+  }
 
   const confirmAndPay = async () => {
     setLoading(true);
@@ -73,7 +84,6 @@ export default function BookingReviewPage() {
             className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition"
           >
             <ArrowLeft size={18} />
-          
           </button>
 
           <h1 className="text-3xl font-semibold text-gray-900">
@@ -121,7 +131,9 @@ export default function BookingReviewPage() {
 
         {/* Total & Pay */}
         <div className="border-t pt-6 text-right">
-          <div className="text-xl font-bold text-gray-900">Total: LKR {totals.total.toFixed(2)}</div>
+          <div className="text-xl font-bold text-gray-900">
+            Total: LKR {totals.total.toFixed(2)}
+          </div>
 
           <button
             onClick={confirmAndPay}
