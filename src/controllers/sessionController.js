@@ -53,29 +53,32 @@ export const lockLocker = (req, res) => {
 
 export const releaseLocker = (req, res) => {
   const { sessionId } = req.params;
+  console.log("🟡 Releasing session ID:", sessionId);
 
-  // 1) Mark session as completed
   db.query(
-  `UPDATE sessions 
-   SET status='completed', locker_state='locked' 
-   WHERE id=?`,
-  [sessionId],
-  (err, result) => {
-    if (err) {
-      console.error("❌ SQL Error while releasing session:", err);
-      return res.status(500).json({ message: "Failed to update the session" });
-    }
+    `UPDATE sessions 
+     SET status='completed', locker_state='locked' 
+     WHERE id=?`,
+    [sessionId],
+    (err, result) => {
+      if (err) {
+        console.error("❌ SQL Error while releasing session:", err.sqlMessage || err);
+        return res.status(500).json({ message: "Failed to update the session" });
+      }
 
-    console.log("🟢 SQL update result:", result);
+      console.log("🟢 SQL update result:", result);
 
+      if (result.affectedRows === 0) {
+        console.warn("⚠️ No session found with that ID!");
+        return res.status(404).json({ message: "Session not found" });
+      }
 
-      // 2) Find its booking_id
+      // Continue booking completion logic...
       db.query(`SELECT booking_id FROM sessions WHERE id=?`, [sessionId], (err2, rows) => {
         if (err2 || !rows.length) return res.json({ message: "Locker Released ✅" });
 
         const booking_id = rows[0].booking_id;
 
-        // 3) Check if all sessions under booking are completed
         db.query(
           `SELECT COUNT(*) AS remaining 
            FROM sessions 
@@ -87,7 +90,6 @@ export const releaseLocker = (req, res) => {
             const remaining = rows2[0].remaining;
 
             if (remaining === 0) {
-              // 4) Mark booking + booking_items as completed
               db.query(`UPDATE bookings SET status='completed' WHERE id=?`, [booking_id]);
               db.query(`UPDATE booking_items SET status='completed' WHERE booking_id=?`, [booking_id]);
               console.log(`✅ Booking ${booking_id} fully completed`);
