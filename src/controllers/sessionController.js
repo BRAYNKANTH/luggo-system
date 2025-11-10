@@ -57,7 +57,7 @@ export const releaseLocker = (req, res) => {
 
   db.query(
     `UPDATE sessions 
-     SET status='completed', locker_state='locked' 
+     SET status='expired', locker_state='locked' 
      WHERE id=?`,
     [sessionId],
     (err, result) => {
