@@ -56,12 +56,18 @@ export const releaseLocker = (req, res) => {
 
   // 1) Mark session as completed
   db.query(
-    `UPDATE sessions 
-     SET status='completed', locker_state='locked' 
-     WHERE id=?`,
-    [sessionId],
-    (err) => {
-      if (err) return res.status(500).json({ message: "Failed to update session" });
+  `UPDATE sessions 
+   SET status='completed', locker_state='locked' 
+   WHERE id=?`,
+  [sessionId],
+  (err, result) => {
+    if (err) {
+      console.error("❌ SQL Error while releasing session:", err);
+      return res.status(500).json({ message: "Failed to update session" });
+    }
+
+    console.log("🟢 SQL update result:", result);
+
 
       // 2) Find its booking_id
       db.query(`SELECT booking_id FROM sessions WHERE id=?`, [sessionId], (err2, rows) => {
