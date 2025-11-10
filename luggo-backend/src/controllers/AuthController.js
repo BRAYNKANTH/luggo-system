@@ -311,7 +311,7 @@ export const forgotPassword = (req, res) => {
 
       if (user.signup_method === "email") {
         const link = `${
-          process.env.FRONTEND_URL || "http://localhost:5173"
+          process.env.FRONTEND_URL || "http://luggo-system-git-main-braynkanth-thaspan-antonys-projects.vercel.app"
         }/reset-password?token=${token}`;
         transporter.sendMail({
           from: "luggo@demo.lk",
