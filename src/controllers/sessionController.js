@@ -63,7 +63,7 @@ export const releaseLocker = (req, res) => {
   (err, result) => {
     if (err) {
       console.error("❌ SQL Error while releasing session:", err);
-      return res.status(500).json({ message: "Failed to update session" });
+      return res.status(500).json({ message: "Failed to update the session" });
     }
 
     console.log("🟢 SQL update result:", result);
