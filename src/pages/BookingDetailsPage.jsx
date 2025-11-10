@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar";
 import { toast } from "sonner";
 import { Calendar, Clock, ReceiptText, Timer, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL || "https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/api";
 
 export default function BookingDetails() {
   const { bookingId } = useParams();

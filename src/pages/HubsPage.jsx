@@ -21,7 +21,7 @@ export default function HubsPage() {
         const { latitude, longitude } = pos.coords;
         try {
           const res = await axios.get(
-            `http://localhost:5000/api/hubs/nearby?lat=${latitude}&lng=${longitude}`
+            `https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/api/hubs/nearby?lat=${latitude}&lng=${longitude}`
           );
           setHubs(res.data.hubs || []);
         } catch {
@@ -84,7 +84,7 @@ export default function HubsPage() {
               className="group bg-white/60 backdrop-blur-sm border border-blue-100 rounded-2xl shadow-sm hover:shadow-blue-200 hover:-translate-y-1 transition transform"
             >
               <img
-                src={`http://localhost:5000${hub.image_url}`}
+                src={`https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net${hub.image_url}`}
                 alt={hub.name}
                 className="w-full h-48 object-cover rounded-t-2xl group-hover:brightness-105 transition"
               />

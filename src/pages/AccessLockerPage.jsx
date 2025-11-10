@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { ArrowLeft, Clock, Unlock, Lock, XCircle, PlusCircle } from "lucide-react";
 import Navbar from "../components/Navbar";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL || "https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/api";
 const PPI_URL = "https://luggo-backend-cpavgbcdhjexexh7.centralindia-01.azurewebsites.net/";
 
 export default function AccessLockerPage() {
@@ -184,6 +184,8 @@ function ExtendModal({ session, onClose }) {
             </button>
           ))}
         </div>
+
+
 
         {selected.length > 0 && (
           <button

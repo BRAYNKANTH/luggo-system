@@ -16,7 +16,7 @@ export default function ExtendSessionPage() {
 
   const fetchSession = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/sessions/${sessionId}`);
+      const res = await axios.get(`https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/api/sessions/${sessionId}`);
       setSession(res.data.session);
     } catch {
       toast.error("Failed to load session");
@@ -27,7 +27,7 @@ export default function ExtendSessionPage() {
   const fetchNextSlots = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/slots/next-available?locker_id=${session.locker_id}&date=${session.date}&after_time=${session.end_time}`
+        `https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/api/slots/next-available?locker_id=${session.locker_id}&date=${session.date}&after_time=${session.end_time}`
       );
       setNextSlots(res.data.slots || []);
     } catch {
@@ -58,7 +58,7 @@ export default function ExtendSessionPage() {
 
   const handleExtend = async (method) => {
     try {
-      await axios.post("http://localhost:5000/api/sessions/extend", {
+      await axios.post("https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/api/sessions/extend", {
         session_id: sessionId,
         slot_ids: nextSlots.slice(0, selectedCount).map((s) => s.id),
         payment_method: method

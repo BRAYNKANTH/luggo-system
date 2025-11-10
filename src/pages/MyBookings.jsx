@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { Calendar, Clock, CheckCircle, XCircle, Unlock } from "lucide-react";
 
 // ✅ Move API_URL outside the component so it never changes
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL || "https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/api";
 
 export default function MyBookings() {
   const navigate = useNavigate();

@@ -55,7 +55,7 @@ export default function BookingReviewPage() {
   const confirmAndPay = async () => {
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:5000/api/bookings/create-group", {
+      const res = await axios.post("https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/api/bookings/create-group", {
         user_id,
         hub_id,
         date,
