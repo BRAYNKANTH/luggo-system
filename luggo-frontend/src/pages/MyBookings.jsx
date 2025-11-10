@@ -96,9 +96,13 @@ export default function MyBookings() {
             {activeSessions.length === 0 ? (
               <p className="text-center text-gray-600 col-span-2">No active locker sessions.</p>
             ) : activeSessions.map((s) => {
-              const end = new Date(s.end_time);
-              const now = new Date();
-              const remainingMs = end - now;
+              // ✅ Fix timezone mismatch (MySQL → local time)
+const end = new Date(s.end_time.replace(" ", "T")); // format for ISO
+const endLocal = new Date(end.getTime() - end.getTimezoneOffset() * 60000);
+
+const now = new Date();
+const remainingMs = endLocal - now;
+
               let remainingText = remainingMs > 0
                 ? `${Math.floor(remainingMs / (1000 * 60 * 60))}h ${Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60))}m ${Math.floor((remainingMs % (1000 * 60)) / 1000)}s left`
                 : "Session Ended";
