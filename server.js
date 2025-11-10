@@ -33,11 +33,14 @@ app.use(express.json());
 // ======================
 // ✅ CORS CONFIG (MULTI DOMAIN)
 // ======================
+
 const allowedOrigins = [
+
   "https://luggo-system-git-main-braynkanth-thaspan-antonys-projects.vercel.app",
   "https://luggo-system-5q9fkhv2v-braynkanth-thaspan-antonys-projects.vercel.app",
   "https://www.luggo.xyz",
   "http://localhost:5173",
+
 ];
 
 app.use((req, res, next) => {
