@@ -446,9 +446,9 @@ ORDER BY l.locker_number ASC
     if (err) return res.status(500).json({ message: "Database error" });
 
     const DAY_PRICE = {
-      small: 800,
-      medium: 1200,
-      large: 2000,
+      small: 450,
+      medium: 700,
+      large: 900,
     };
 
     const withPrices = rows.map(l => ({

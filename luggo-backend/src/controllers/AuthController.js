@@ -61,7 +61,7 @@ export const registerUser = async (req, res) => {
                 expiresIn: "1d",
               });
               const link = `${
-                process.env.FRONTEND_URL || "http://localhost:5173"
+                process.env.FRONTEND_URL || "https://luggo-system-5q9fkhv2v-braynkanth-thaspan-antonys-projects.vercel.app"
               }/verify-email?token=${token}`;
 
               const htmlBody = `
@@ -311,7 +311,7 @@ export const forgotPassword = (req, res) => {
 
       if (user.signup_method === "email") {
         const link = `${
-          process.env.FRONTEND_URL || "http://localhost:5173"
+          process.env.FRONTEND_URL || "https://luggo-system-5q9fkhv2v-braynkanth-thaspan-antonys-projects.vercel.app/"
         }/reset-password?token=${token}`;
         transporter.sendMail({
           from: "luggo@demo.lk",
