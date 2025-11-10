@@ -32,7 +32,7 @@ app.use(cors({
   origin: [
     "https://luggo-system-5q9fkhv2v-braynkanth-thaspan-antonys-projects.vercel.app",
     "http://localhost:5173",
-    "http://www.luggo.xyz",
+    "https://www.luggo.xyz",
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
