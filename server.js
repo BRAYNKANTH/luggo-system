@@ -23,20 +23,28 @@ import "./src/cron/sessionLifecycle.js";
 dotenv.config();
 const app = express();
 
-app.use('/uploads', express.static('uploads'));
+// Static uploads
+app.use("/uploads", express.static("uploads"));
+
+// Parsers
 app.use(bodyParser.json());
 app.use(express.json());
 
-// ✅ Correct CORS configuration (only one)
-app.use(cors({
-  origin: [
-    "https://luggo-system-5q9fkhv2v-braynkanth-thaspan-antonys-projects.vercel.app",
-    "http://localhost:5173",
-    "https://www.luggo.xyz",
-  ],
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true,
-}));
+// ✅ Correct and secure CORS configuration (only one)
+app.use(
+  cors({
+    origin: [
+      "https://luggo-system-5q9fkhv2v-braynkanth-thaspan-antonys-projects.vercel.app",
+      "https://www.luggo.xyz",
+      "http://localhost:5173", // local dev
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true,
+  })
+);
+
+// ✅ Handle preflight requests explicitly
+app.options("*", cors());
 
 // Routes
 app.use("/api/auth", authRoutes);
@@ -55,5 +63,6 @@ app.get("/", (req, res) => {
   res.send("🚀 Luggo Backend API running...");
 });
 
+// Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
