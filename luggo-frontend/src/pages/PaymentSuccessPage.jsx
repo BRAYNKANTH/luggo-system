@@ -16,7 +16,7 @@ export default function PaymentSuccess() {
     axios.post(`https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/api/payments/confirm-payment/${booking_id}`)
       .then(() => toast.success("Payment verified & sessions created ✅"))
       .catch(() => toast.error("Failed to confirm payment"));
-  }, [order_id, status_code]);
+  }, [order_id]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-6">
