@@ -62,46 +62,19 @@ export const releaseLocker = (req, res) => {
     [sessionId],
     (err, result) => {
       if (err) {
-        console.error("❌ SQL Error while releasing session:", err.sqlMessage || err);
-        return res.status(500).json({ message: "Failed to update the session" });
+        console.error("❌ SQL Error details:", err);
+        return res.status(500).json({
+          message: "Failed to update the session",
+          error: err.sqlMessage || err.message
+        });
       }
 
       console.log("🟢 SQL update result:", result);
-
-      if (result.affectedRows === 0) {
-        console.warn("⚠️ No session found with that ID!");
-        return res.status(404).json({ message: "Session not found" });
-      }
-
-      // Continue booking completion logic...
-      db.query(`SELECT booking_id FROM sessions WHERE id=?`, [sessionId], (err2, rows) => {
-        if (err2 || !rows.length) return res.json({ message: "Locker Released ✅" });
-
-        const booking_id = rows[0].booking_id;
-
-        db.query(
-          `SELECT COUNT(*) AS remaining 
-           FROM sessions 
-           WHERE booking_id=? AND status != 'completed'`,
-          [booking_id],
-          (err3, rows2) => {
-            if (err3) return res.json({ message: "Locker Released ✅" });
-
-            const remaining = rows2[0].remaining;
-
-            if (remaining === 0) {
-              db.query(`UPDATE bookings SET status='completed' WHERE id=?`, [booking_id]);
-              db.query(`UPDATE booking_items SET status='completed' WHERE booking_id=?`, [booking_id]);
-              console.log(`✅ Booking ${booking_id} fully completed`);
-            }
-
-            return res.json({ message: "Locker Released ✅" });
-          }
-        );
-      });
+      res.json({ message: "Locker Released ✅" });
     }
   );
 };
+
 
 /* ======================================================
    CREATE SESSIONS AFTER PAYMENT CONFIRMATION
