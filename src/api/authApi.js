@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL + "/auth", // e.g. http://localhost:5000/api/auth
+  baseURL: import.meta.env.VITE_API_URL + "/auth", // e.g. https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/api/auth
 });
 
 // Register (email or phone)

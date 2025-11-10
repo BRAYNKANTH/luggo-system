@@ -28,7 +28,7 @@ export default function BookingConfirmationPage() {
   useEffect(() => {
     const fetchHub = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/hubs/${hubId}`);
+        const res = await axios.get(`https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/api/hubs/${hubId}`);
         setHub(res.data.hub);
       } catch (err) {
         console.error(err);
@@ -52,7 +52,7 @@ export default function BookingConfirmationPage() {
   useEffect(() => {
     const fetchLockerPrices = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/lockers/hub/${hubId}`);
+        const res = await axios.get(`https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/api/lockers/hub/${hubId}`);
         const allLockers = res.data.lockers;
         const selected = allLockers.filter((l) => lockers.includes(l.locker_number));
         const total = selected.reduce(
@@ -84,7 +84,7 @@ export default function BookingConfirmationPage() {
     try {
       setIsProcessing(true);
 
-      const res = await axios.get(`http://localhost:5000/api/lockers/hub/${hubId}`);
+      const res = await axios.get(`https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/api/lockers/hub/${hubId}`);
       const allLockers = res.data.lockers;
 
       const bookingTasks = lockers.map(async (lockerNumber) => {
@@ -92,7 +92,7 @@ export default function BookingConfirmationPage() {
         if (!locker) return;
 
         // 1️⃣ Create Booking
-        const bookingRes = await axios.post("http://localhost:5000/api/bookings", {
+        const bookingRes = await axios.post("https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/api/bookings", {
           user_id: user.id,
           locker_id: locker.id,
           start_time,
@@ -103,7 +103,7 @@ export default function BookingConfirmationPage() {
         const amount = locker.price_per_hour * totalHours;
 
         // 2️⃣ Process Payment
-        await axios.post("http://localhost:5000/api/payments", {
+        await axios.post("https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/api/payments", {
           booking_id: bookingId,
           amount,
           payment_method: paymentMethod,

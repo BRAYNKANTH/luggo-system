@@ -26,7 +26,7 @@ export default function HubDetails() {
   useEffect(() => {
     const fetchHub = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/hubs/${id}`);
+        const res = await axios.get(`https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/api/hubs/${id}`);
         setHub(res.data.hub);
 
         if (navigator.geolocation) {
@@ -69,7 +69,7 @@ export default function HubDetails() {
 
         {/* Image */}
         <img
-          src={`http://localhost:5000${hub.image_url}`}
+          src={`https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net${hub.image_url}`}
           alt={hub.name}
           className="w-full h-64 object-cover"
         />

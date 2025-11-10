@@ -14,7 +14,7 @@ export default function PaymentSuccess() {
 
     const booking_id = order_id.split("-")[0]; // extract real id
 
-    axios.post(`http://localhost:5000/api/payments/confirm-payment/${booking_id}`)
+    axios.post(`https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/api/payments/confirm-payment/${booking_id}`)
       .then(() => toast.success("Payment verified & sessions created ✅"))
       .catch(() => toast.error("Failed to confirm payment"));
   }, [order_id, status_code]);
