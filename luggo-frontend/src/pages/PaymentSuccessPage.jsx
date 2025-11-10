@@ -10,8 +10,8 @@ export default function PaymentSuccess() {
   const status_code = params.get("status_code");
 
   useEffect(() => {
-    if (!order_id || status_code !== "2") return;
-
+    if (!order_id ) return;
+ 
     const booking_id = order_id.split("-")[0]; // extract real id
 
     axios.post(`https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/api/payments/confirm-payment/${booking_id}`)
