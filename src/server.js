@@ -8,7 +8,6 @@ import lockerRoutes from "./routes/lockerRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import sessionRoutes from "./routes/sessionRoutes.js";
-import { autoExpireJob } from "./controllers/SessionController.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import supportRoutes from "./routes/supportRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
@@ -21,10 +20,19 @@ import hubRoutes from "./routes/hubRoutes.js";
 
 dotenv.config();
 const app = express();
-autoExpireJob(); // start cron when server boots
+
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.json());
+
+
+app.use((req, res, next) => {
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://www.luggo.xyz https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:;"
+  );
+  next();
+});
 
 // Routes
 app.use("/api/auth", authRoutes);
