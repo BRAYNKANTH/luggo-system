@@ -5,9 +5,8 @@ import { toast } from "sonner";
 import { CheckCircle } from "lucide-react";
 
 export default function PaymentSuccess() {
-  const [params] = useSearchParams();
-  const order_id = params.get("order_id"); 
-  const status_code = params.get("status_code");
+   const [params] = useSearchParams();
+  const order_id = params.get("order_id");
 
   useEffect(() => {
     if (!order_id ) return;
