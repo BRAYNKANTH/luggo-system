@@ -41,7 +41,7 @@ export default function AvailabilityPage() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/slots");
+        const res = await axios.get("https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/api/slots");
         const list = res.data.slots || [];
         setSlots(list);
 
@@ -69,8 +69,8 @@ export default function AvailabilityPage() {
     try {
       const endpoint =
         mode === "hourly"
-          ? "http://localhost:5000/api/bookings/available-by-slot"
-          : "http://localhost:5000/api/bookings/available-by-day";
+          ? "https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/api/bookings/available-by-slot"
+          : "https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/api/bookings/available-by-day";
 
       const params =
         mode === "hourly"

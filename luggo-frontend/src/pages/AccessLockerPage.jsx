@@ -1,33 +1,36 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
 import { ArrowLeft, Clock, Unlock, Lock, XCircle, PlusCircle } from "lucide-react";
 import Navbar from "../components/Navbar";
 
-export default function AccessLockerPage() {
-  const { sessionId } = useParams();    // ✅ this is correct
-  const navigate = useNavigate();
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL || "https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/api";
 const PPI_URL = "https://luggo-backend-cpavgbcdhjexexh7.centralindia-01.azurewebsites.net/";
+
+export default function AccessLockerPage() {
+  const { sessionId } = useParams();
+  const navigate = useNavigate();
+
   const [session, setSession] = useState(null);
   const [timeLeft, setTimeLeft] = useState("");
   const [showExtendModal, setShowExtendModal] = useState(false);
 
-  const fetchSession = async () => {
+  // ✅ Stable function — no more warnings
+  const fetchSession = useCallback(async () => {
     try {
-      const res = await axios.get(`${API_URL}/sessions/${sessionId}`); // ✅ use sessionId
+      const res = await axios.get(`${API_URL}/sessions/${sessionId}`);
       setSession(res.data.session);
     } catch {
       toast.error("Failed to load session");
       navigate("/my-bookings");
     }
-  };
-
+  }, [sessionId, navigate]);
 
   useEffect(() => {
-    fetchSession();
-  }, []);
+    fetchSession(); // ✅ safe now
+  }, [fetchSession]);
+
 
   // ⏱ Countdown Display
   useEffect(() => {
@@ -49,12 +52,12 @@ const PPI_URL = "https://luggo-backend-cpavgbcdhjexexh7.centralindia-01.azureweb
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [session]);
+  }, [session]); // ✅ safe
 
   // Locker Commands
   const handleAction = async (action) => {
     try {
-      await axios.post(`${PPI_URL}/api/locker1/unlock`);
+      await axios.post(`${PPI_URL}/api/locker1/${action}`);
       toast.success(`Locker ${action}ed ✅`);
       fetchSession();
     } catch {
@@ -62,23 +65,16 @@ const PPI_URL = "https://luggo-backend-cpavgbcdhjexexh7.centralindia-01.azureweb
     }
   };
 
- const releaseLocker = async () => {
-  const url = `http://localhost:5000/api/sessions/release/${sessionId}`; 
-  console.log("Sending PUT:", url);
-
-  try {
-    const res = await axios.put(url);
-    console.log("Response:", res.data);
-
-    toast.success("Locker Released ✅");
-    navigate("/my-bookings");
-  } catch (err) {
-    console.error("Release error:", err.response?.data || err.message);
-    toast.error(err.response?.data?.message || "Failed to release locker");
-  }
-};
-
-
+  const releaseLocker = async () => {
+    try {
+      await axios.put(`${API_URL}/sessions/release/${sessionId}`);
+      toast.success("Locker Released ✅");
+      navigate("/my-bookings");
+    } catch (err) {
+      console.error("Release error:", err);
+      toast.error(err.response?.data?.message || "Failed to release locker");
+    }
+  };
 
   if (!session)
     return <div className="min-h-screen flex justify-center items-center">Loading session...</div>;
@@ -141,17 +137,16 @@ const PPI_URL = "https://luggo-backend-cpavgbcdhjexexh7.centralindia-01.azureweb
    EXTEND MODAL
 ---------------------------------------------------- */
 function ExtendModal({ session, onClose }) {
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
   const navigate = useNavigate();
   const [slots, setSlots] = useState([]);
   const [selected, setSelected] = useState([]);
 
   useEffect(() => {
-  axios
-    .get(`${API_URL}/sessions/extendable/${session.id}`)
-    .then(res => setSlots(res.data.available_slots || []))
-    .catch(() => toast.error("Unable to load extendable slots"));
-}, []);
+    axios
+      .get(`${API_URL}/sessions/extendable/${session.id}`)
+      .then(res => setSlots(res.data.available_slots || []))
+      .catch(() => toast.error("Unable to load extendable slots"));
+  }, [session.id]); // ✅ correct
 
   const selectSlot = (slot) => {
     if (selected.length > 0) {
@@ -161,17 +156,16 @@ function ExtendModal({ session, onClose }) {
     setSelected([...selected, slot]);
   };
 
- const continueExtension = () => {
-  const slot_ids = selected.map(s => s.id);
-
-  navigate("/payment-extension", { 
-    state: { 
-      session_id: session.id,      // ✅ correct session id
-      locker_id: session.locker_id, // ✅ added locker_id
-      slot_ids 
-    } 
-  });
-};
+  const continueExtension = () => {
+    const slot_ids = selected.map(s => s.id);
+    navigate("/payment-extension", {
+      state: {
+        session_id: session.id,
+        locker_id: session.locker_id,
+        slot_ids
+      }
+    });
+  };
 
   return (
     <div className="fixed inset-0 bg-black/40 flex justify-center items-center">
@@ -183,13 +177,15 @@ function ExtendModal({ session, onClose }) {
           {slots.map(slot => (
             <button
               key={slot.id}
-              className={`w-full border p-2 rounded hover:bg-blue-50`}
+              className="w-full border p-2 rounded hover:bg-blue-50"
               onClick={() => selectSlot(slot)}
             >
               {slot.slot_label}: {slot.start_time} → {slot.end_time}
             </button>
           ))}
         </div>
+
+
 
         {selected.length > 0 && (
           <button

@@ -65,7 +65,7 @@ export default function LandingPage() {
           {/* Hero Image */}
           <div className="flex-1 flex justify-center">
             <img
-              src="http://localhost:5000/uploads/luggo.png"
+              src="https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/uploads/luggo.png"
               alt="Luggo Smart Lockers"
               className="max-w-md w-full animate-fade-in"
             />

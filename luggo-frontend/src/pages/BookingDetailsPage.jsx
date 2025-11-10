@@ -5,20 +5,22 @@ import Navbar from "../components/Navbar";
 import { toast } from "sonner";
 import { Calendar, Clock, ReceiptText, Timer, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+const API_URL = import.meta.env.VITE_API_URL || "https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/api";
 
 export default function BookingDetails() {
-  const { bookingId } = useParams(); // booking_id
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  const { bookingId } = useParams();
   const [booking, setBooking] = useState(null);
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    axios.get(`${API_URL}/bookings/details/${bookingId}`).then(res => {
-      setBooking(res.data.booking);
-      setItems(res.data.items);
-    }).catch(() => toast.error("Failed to load booking details"));
-  }, [bookingId]);
-
+    axios
+      .get(`${API_URL}/bookings/details/${bookingId}`)
+      .then((res) => {
+        setBooking(res.data.booking);
+        setItems(res.data.items);
+      })
+      .catch(() => toast.error("Failed to load booking details"));
+  }, [bookingId]); // ✅ No warning now
   if (!booking) return <div className="min-h-screen flex justify-center items-center">Loading...</div>;
 
   const downloadReceipt = () => {

@@ -10,7 +10,7 @@ export default function VerifyEmailPage() {
   const navigate = useNavigate();
   const [status, setStatus] = useState("loading");
 
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  const API_URL = import.meta.env.VITE_API_URL || "https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/api";
 
   useEffect(() => {
     const verifyEmail = async () => {

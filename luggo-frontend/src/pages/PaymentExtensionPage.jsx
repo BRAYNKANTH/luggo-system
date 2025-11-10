@@ -4,10 +4,11 @@ import axios from "axios";
 import { toast } from "sonner";
 import Navbar from "../components/Navbar";
 
+const API_URL = import.meta.env.VITE_API_URL || "https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/api";
+
 export default function PaymentExtensionPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
   const state = location.state || {};
 
@@ -21,7 +22,8 @@ export default function PaymentExtensionPage() {
   useEffect(() => {
     if (!session_id || !slot_ids || !locker_id) {
       toast.error("Extension details missing");
-      return navigate("/my-bookings");
+      navigate("/my-bookings");
+      return;
     }
 
     async function load() {
@@ -36,40 +38,40 @@ export default function PaymentExtensionPage() {
 
         setCost(res2.data.extra_cost);
       } catch (err) {
+        console.error(err);
         toast.error("Failed to load extension info");
         navigate("/my-bookings");
       }
     }
 
     load();
-  }, []);
+  }, [session_id, slot_ids, locker_id, navigate]); // ✅ dependencies now correct
 
   const payNow = async () => {
-  try {
-    const res = await axios.post(`${API_URL}/sessions/extension/payhere-session`, {
-      session_id,
-      slot_ids
-    });
+    try {
+      const res = await axios.post(`${API_URL}/sessions/extension/payhere-session`, {
+        session_id,
+        slot_ids
+      });
 
-    const form = document.createElement("form");
-    form.method = "POST";
-    form.action = "https://sandbox.payhere.lk/pay/checkout";
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = "https://sandbox.payhere.lk/pay/checkout";
 
-    Object.entries(res.data).forEach(([key, value]) => {
-      const input = document.createElement("input");
-      input.type = "hidden";
-      input.name = key;
-      input.value = value;
-      form.appendChild(input);
-    });
+      Object.entries(res.data).forEach(([key, value]) => {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = key;
+        input.value = value;
+        form.appendChild(input);
+      });
 
-    document.body.appendChild(form);
-    form.submit();
-
-  } catch {
-    toast.error("Payment failed");
-  }
-};
+      document.body.appendChild(form);
+      form.submit();
+    } catch {
+      toast.error("Payment failed");
+    }
+  };
 
   if (!session || cost === null) {
     return <div className="min-h-screen flex justify-center items-center">Loading...</div>;
@@ -78,7 +80,6 @@ export default function PaymentExtensionPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-
       <div className="max-w-2xl mx-auto pt-24 px-6">
         <h1 className="text-2xl font-bold text-blue-700 mb-4">Extend Session</h1>
 

@@ -18,7 +18,7 @@ export default function PaymentPage() {
   useEffect(() => {
     async function fetchAmount() {
       try {
-        const res = await axios.get(`http://localhost:5000/api/bookings/${booking_id}`);
+        const res = await axios.get(`https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/api/bookings/${booking_id}`);
         setAmount(res.data.booking.total_amount);
       } catch {
         toast.error("Could not load booking details.");
@@ -32,7 +32,7 @@ export default function PaymentPage() {
       setLoading(true);
 
       const { data } = await axios.post(
-        "http://localhost:5000/api/payments/payhere-session",
+        "https://luggo-backend-cpavgbcdhjexexh7.southeastasia-01.azurewebsites.net/api/payments/payhere-session",
         { booking_id }
       );
 
