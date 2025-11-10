@@ -23,30 +23,47 @@ import "./src/cron/sessionLifecycle.js";
 dotenv.config();
 const app = express();
 
-// Static uploads
+// ======================
+// ✅ STATIC + PARSERS
+// ======================
 app.use("/uploads", express.static("uploads"));
-
-// Parsers
 app.use(bodyParser.json());
 app.use(express.json());
 
-// ✅ Correct and secure CORS configuration (only one)
-app.use(
-  cors({
-    origin: [
-      "https://luggo-system-5q9fkhv2v-braynkanth-thaspan-antonys-projects.vercel.app",
-      "https://www.luggo.xyz",
-      "http://localhost:5173", // local dev
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    credentials: true,
-  })
-);
+// ======================
+// ✅ CORS CONFIG (MULTI DOMAIN)
+// ======================
+const allowedOrigins = [
+  "https://luggo-system-git-main-braynkanth-thaspan-antonys-projects.vercel.app",
+  "https://luggo-system-5q9fkhv2v-braynkanth-thaspan-antonys-projects.vercel.app",
+  "https://www.luggo.xyz",
+  "http://localhost:5173",
+];
 
-// ✅ Handle preflight requests explicitly
-app.options("*", cors());
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization"
+  );
+  res.setHeader("Access-Control-Allow-Credentials", "true");
 
-// Routes
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
+// ======================
+// ✅ ROUTES
+// ======================
 app.use("/api/auth", authRoutes);
 app.use("/api/hubs", hubRoutes);
 app.use("/api/lockers", lockerRoutes);
@@ -58,11 +75,15 @@ app.use("/api/support", supportRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/slots", slotRoutes);
 
-// Root
+// ======================
+// ✅ ROOT
+// ======================
 app.get("/", (req, res) => {
   res.send("🚀 Luggo Backend API running...");
 });
 
-// Start server
+// ======================
+// ✅ SERVER START
+// ======================
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
